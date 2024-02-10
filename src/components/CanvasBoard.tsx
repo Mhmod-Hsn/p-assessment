@@ -10,7 +10,7 @@ type Props = {
 	boxes: TBox[];
 };
 
-export const CanvasBoard = ({ bgImage, boxes }: Props) => {
+const CanvasBoard = ({ bgImage, boxes }: Props) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
 	const dimentions = useWindowDimensions();
@@ -57,7 +57,7 @@ export const CanvasBoard = ({ bgImage, boxes }: Props) => {
 
 		boxes.forEach((box) => {
 			// rescale points with the ratio between screen and image
-			const pts = box.points.map((pt) => pt * ratioBetweenScreenAndImg);
+			const pts = box.points.map((pt: number) => pt * ratioBetweenScreenAndImg);
 
 			ctx.beginPath();
 			ctx?.rect(pts[0], pts[1], pts[2] - pts[0], pts[3] - pts[1]);
@@ -91,3 +91,5 @@ export const CanvasBoard = ({ bgImage, boxes }: Props) => {
 		</div>
 	);
 };
+
+export default CanvasBoard;

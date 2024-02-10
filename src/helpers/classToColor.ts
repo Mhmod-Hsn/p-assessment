@@ -1,6 +1,4 @@
-import { TClass } from '@/types/class';
-
-export const classToColor = (className: TClass) => {
+export const classToColor = (className: string) => {
 	switch (className) {
 		case 'Name':
 			return 'blue';

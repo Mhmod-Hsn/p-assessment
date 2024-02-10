@@ -1,18 +1,10 @@
-import { CanvasBoard } from '@/components/CanvasBoard';
-import { promises as fs } from 'fs';
+import { CanvasWrapper } from '@/components/CanvasWrapper';
+import data from '../data/task-object.json';
 
 export default async function Home() {
-	const file = await fs.readFile(
-		process.cwd() + '/src/data/task-object.json',
-		'utf8'
-	);
-	const data = JSON.parse(file);
-
-	console.log(data.boxes);
 	return (
-		<main className='w-full h-[100vh]'>
-			{/* <Image src={data.base64} width={200} height={200} alt='image' /> */}
-			<CanvasBoard bgImage={data.base64} boxes={data.boxes} />
+		<main className='w-full h-[100vh] '>
+			<CanvasWrapper data={data} />
 		</main>
 	);
 }
