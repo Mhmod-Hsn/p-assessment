@@ -40,15 +40,13 @@ export const Sidebar = memo(() => {
               border
               rounded-md
               mb-4
-              ps-2
-              hover:dark:bg-slate-600
-              pb-2
+              p-2
               '
 						>
 							{BoxClassTitle(key)}
 
 							{groupedBoxes[key].map((box, index) => (
-								<BoxItems key={index} {...box} />
+								<BoxItem key={index} {...box} />
 							))}
 						</div>
 					);
@@ -97,7 +95,7 @@ const BoxClassTitle = (key: string) => {
 		</div>
 	);
 };
-const BoxItems = (box: TBox, index: number) => {
+const BoxItem = (box: TBox, index: number) => {
 	const { activeBox, setActiveBox } = useBoxesStore((state) => state);
 
 	const onClickHandler = (box: TBox) => {
