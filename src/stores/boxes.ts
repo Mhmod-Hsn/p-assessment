@@ -7,6 +7,7 @@ type BoxesState = {
 	setActiveBox: (box: TBox | null) => void;
 	setBoxes: (boxes: TBox[]) => void;
 	removeBox: (id: string) => void;
+	updateBox: (box: TBox) => void;
 };
 
 export const useBoxesStore = create<BoxesState>((set) => ({

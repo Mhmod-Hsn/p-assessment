@@ -1,6 +1,5 @@
 'use client';
 
-import { classToColor } from '@/helpers/classToColor';
 import useWindowDimensions from '@/hooks/useWindowDimentions';
 import { MOBILE_BREAKPOINT } from '@/lib/constants';
 import { useBoxesStore } from '@/stores/boxes';
@@ -8,6 +7,8 @@ import { TBox } from '@/types/box';
 import { HamburgerMenuIcon } from '@radix-ui/react-icons';
 import { memo, useLayoutEffect, useState } from 'react';
 import { Drawer } from 'vaul';
+import { BoxItem } from './Sidebar/BoxItem';
+import { ClassTitle } from './Sidebar/ClassTitle';
 import { ModeToggle } from './ThemeToggle';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -48,7 +49,7 @@ export const Sidebar = memo(() => {
               p-2
               '
 						>
-							{BoxClassTitle(key)}
+							{ClassTitle(key)}
 
 							{groupedBoxes[key].map((box, index) => (
 								<BoxItem key={index} {...box} />
@@ -79,6 +80,7 @@ export const Sidebar = memo(() => {
 			<ModeToggle />
 		</div>
 	);
+
 	if (screenDimentions.width > MOBILE_BREAKPOINT) return renderSidebarContent();
 
 	return (
@@ -102,45 +104,3 @@ export const Sidebar = memo(() => {
 	);
 });
 Sidebar.displayName = 'Sidebar';
-
-const BoxClassTitle = (key: string) => {
-	return (
-		<div className='flex flex-row items-center gap-2 py-1'>
-			<span
-				className='w-4 h-4 rounded-full'
-				style={{ backgroundColor: classToColor(key) }}
-			></span>
-			<p
-				className='
-          text-lg
-          font-bold
-          '
-			>
-				{key}
-			</p>
-		</div>
-	);
-};
-const BoxItem = (box: TBox, index: number) => {
-	const { activeBox, setActiveBox } = useBoxesStore((state) => state);
-
-	const onClickHandler = (box: TBox) => {
-		setActiveBox(box);
-	};
-
-	const isActive = activeBox?.id === box.id;
-
-	return (
-		<Button
-			key={`${box.text}-${index}`}
-			className={`
-        py-1 block 
-        ${isActive && 'bg-slate-200 dark:bg-slate-500'}
-      `}
-			variant='ghost'
-			onClick={() => onClickHandler(box)}
-		>
-			{box.text}
-		</Button>
-	);
-};

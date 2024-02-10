@@ -1,17 +1,17 @@
 export const classToColor = (className: string) => {
 	switch (className) {
 		case 'Name':
-			return 'blue';
+			return 'darkred';
 		case 'Description':
 			return 'green';
 		case 'Date':
 			return 'red';
 		case 'Amount':
-			return 'yellow';
+			return 'darkblue';
 		case 'Supplier':
 			return 'purple';
 		case 'Number':
-			return 'pink';
+			return 'black';
 		default:
 			return 'gray';
 	}

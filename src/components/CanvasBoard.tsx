@@ -1,6 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-'use client';
-
 import { classToColor } from '@/helpers/classToColor';
 import useWindowDimensions from '@/hooks/useWindowDimentions';
 import { useBoxesStore } from '@/stores/boxes';
@@ -23,23 +21,22 @@ const CanvasBoard = ({ bgImage }: Props) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
-	const screenDimentions = useWindowDimensions();
+	const screenDimensions = useWindowDimensions();
 
-	const [imgDimentions, setImgDimentions] = useState({
+	const [imgDimensions, setImgDimensions] = useState({
 		width: 0,
 		height: 0,
 	});
-	const [containerDimentions, setContainerDimentions] = useState({
+	const [containerDimensions, setContainerDimensions] = useState({
 		width: 0,
 		height: 0,
 	});
 	const [ratioBetweenContainerAndImage, setRatioBetweenContainerAndImage] =
 		useState(0);
 
-	// Memoize the aspect ratio
 	const imageAspectRatio = useMemo(
-		() => imgDimentions.width / imgDimentions.height,
-		[imgDimentions.height, imgDimentions.width]
+		() => imgDimensions.width / imgDimensions.height,
+		[imgDimensions.height, imgDimensions.width]
 	);
 
 	const drawBoxes = useCallback(() => {
@@ -49,27 +46,31 @@ const CanvasBoard = ({ bgImage }: Props) => {
 		if (!ctx) return;
 
 		boxes.forEach((box) => {
-			console.log('box', box);
-
 			const pts = box.points.map(
 				(pt: number) => pt * ratioBetweenContainerAndImage
 			);
 
+			// draw the box
 			ctx.beginPath();
 			ctx?.rect(pts[0], pts[1], pts[2] - pts[0], pts[3] - pts[1]);
-
 			ctx.fillStyle = classToColor(box.class);
 			ctx.fill();
+
+			// draw the text
+			ctx.fillStyle = 'white';
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+			ctx.font = `bold ${ratioBetweenContainerAndImage}rem  sans-serif`;
+			ctx.fillText(box.text, (pts[0] + pts[2]) / 2, (pts[1] + pts[3]) / 2);
 		});
 	}, [boxes, ratioBetweenContainerAndImage]);
 
-	// get image dimentions and calculate aspect ratio
 	useLayoutEffect(() => {
 		if (!bgImage) return;
 		const img = new Image();
 		img.src = bgImage;
 		img.onload = () => {
-			setImgDimentions({
+			setImgDimensions({
 				width: img.naturalWidth,
 				height: img.naturalHeight,
 			});
@@ -79,61 +80,46 @@ const CanvasBoard = ({ bgImage }: Props) => {
 	useEffect(() => {
 		if (containerRef?.current) {
 			const rect = containerRef.current.getBoundingClientRect();
-			setContainerDimentions({
+			setContainerDimensions({
 				width: rect.width,
 				height: rect.height,
 			});
-			setRatioBetweenContainerAndImage(rect.width / imgDimentions.width);
+			setRatioBetweenContainerAndImage(rect.width / imgDimensions.width);
 			if (canvasRef.current) {
 				canvasRef.current.width = rect.width;
 				canvasRef.current.height = rect.height;
 				drawBoxes();
 			}
 		}
-	}, [drawBoxes, imgDimentions.width, screenDimentions]);
-
-	// const ratioBetweenScreenAndImg = width / img.naturalWidth;
-
-	// const updateCanvasDimensions = useCallback(() => {
-	// 	if (!canvasRef.current) return;
-	// 	const canvas = canvasRef.current;
-	// 	canvas.width = width;
-	// 	canvas.height = height;
-	// }, [height, width]);
-
-	// useEffect(() => {
-	// 	updateCanvasDimensions();
-	// }, []);
+	}, [drawBoxes, imgDimensions.width, screenDimensions]);
 
 	useEffect(() => {
 		drawBoxes();
 	}, [drawBoxes]);
 
-	const renderCanvas = () => {
-		return <canvas ref={canvasRef} className='absolute top-0 left-0 border ' />;
-	};
+	const renderCanvas = () => (
+		<canvas ref={canvasRef} className='absolute top-0 left-0 border' />
+	);
 
-	const renderDebugData = () => {
-		return (
-			<div className='fixed top-4 right-4 z-50 p-3  dark:text-slate-900 backdrop-blur-sm border'>
-				<p>
-					imgDimentions: {imgDimentions.width}, {imgDimentions.height}
-				</p>
-				<p>imageAspectRatio: {imageAspectRatio}</p>
-				<p>
-					containerDimentions: {containerDimentions.width},{' '}
-					{containerDimentions.height}
-				</p>
-				<p>ratioBetweenContainerAndImage: {ratioBetweenContainerAndImage}</p>
-			</div>
-		);
-	};
+	const renderDebugData = () => (
+		<div className='fixed top-4 right-4 z-50 p-3 dark:text-slate-900 backdrop-blur-sm border'>
+			<p>
+				imgDimensions: {imgDimensions.width}, {imgDimensions.height}
+			</p>
+			<p>imageAspectRatio: {imageAspectRatio}</p>
+			<p>
+				containerDimensions: {containerDimensions.width},{' '}
+				{containerDimensions.height}
+			</p>
+			<p>ratioBetweenContainerAndImage: {ratioBetweenContainerAndImage}</p>
+		</div>
+	);
 
 	return (
-		<ScrollArea className='w-full h-full '>
-			{renderDebugData()}
+		<ScrollArea className='w-full h-full'>
+			{/* {renderDebugData()} */}
 			<div ref={containerRef} className='relative'>
-				<img className='w-full h-auto' alt='bcakground image' src={bgImage} />
+				<img className='w-full h-auto' alt='background image' src={bgImage} />
 				{renderCanvas()}
 			</div>
 		</ScrollArea>
