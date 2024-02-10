@@ -5,6 +5,7 @@ import { useBoxesStore } from '@/stores/boxes';
 import { TBox } from '@/types/box';
 import { memo, useEffect, useState } from 'react';
 import { ModeToggle } from './ThemeToggle';
+import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 
 type DetectedFields = {
@@ -41,6 +42,7 @@ export const Sidebar = memo(() => {
               mb-4
               ps-2
               hover:dark:bg-slate-600
+              pb-2
               '
 						>
 							{BoxClassTitle(key)}
@@ -96,18 +98,25 @@ const BoxClassTitle = (key: string) => {
 	);
 };
 const BoxItems = (box: TBox, index: number) => {
-	const setActiveBox = useBoxesStore((state) => state.setActiveBox);
+	const { activeBox, setActiveBox } = useBoxesStore((state) => state);
+
 	const onClickHandler = (box: TBox) => {
 		setActiveBox(box);
 	};
 
+	const isActive = activeBox?.id === box.id;
+
 	return (
-		<button
+		<Button
 			key={`${box.text}-${index}`}
-			className='py-1'
+			className={`
+        py-1 block 
+        ${isActive && 'bg-slate-200 dark:bg-slate-500'}
+      `}
+			variant='ghost'
 			onClick={() => onClickHandler(box)}
 		>
 			{box.text}
-		</button>
+		</Button>
 	);
 };
