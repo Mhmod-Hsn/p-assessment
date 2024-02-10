@@ -83,6 +83,7 @@ export const BoxForm = (props: Props) => {
 								<Input placeholder='Text' {...field} />
 							</FormControl>
 							<FormMessage />
+							<FormDescription>Update text value</FormDescription>
 						</FormItem>
 					)}
 				/>
