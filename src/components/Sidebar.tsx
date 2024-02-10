@@ -1,16 +1,16 @@
 'use client';
 
 import { classToColor } from '@/helpers/classToColor';
+import { useBoxesStore } from '@/stores/boxes';
 import { TBox } from '@/types/box';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
-type Props = {
-	boxes: TBox[];
-};
 type DetectedFields = {
 	[key: string]: TBox[];
 };
-export const Sidebar = ({ boxes }: Props) => {
+
+export const Sidebar = memo(() => {
+	const boxes = useBoxesStore((state) => state.boxes);
 	const [groupedBoxes, setGroupedBoxes] = useState<DetectedFields>({});
 
 	useEffect(() => {
@@ -45,17 +45,20 @@ export const Sidebar = ({ boxes }: Props) => {
               hover:dark:bg-slate-600
               '
 					>
-						{renderBoxClassTitle(key)}
+						{BoxClassTitle(key)}
 
-						{groupedBoxes[key].map((box, index) => renderBoxItems(box, index))}
+						{groupedBoxes[key].map((box, index) => (
+							<BoxItems key={index} {...box} />
+						))}
 					</div>
 				);
 			})}
 		</div>
 	);
-};
+});
+Sidebar.displayName = 'Sidebar';
 
-const renderBoxClassTitle = (key: string) => {
+const BoxClassTitle = (key: string) => {
 	return (
 		<div className='flex flex-row items-center gap-2 py-1'>
 			<span
@@ -73,10 +76,19 @@ const renderBoxClassTitle = (key: string) => {
 		</div>
 	);
 };
-const renderBoxItems = (box: TBox, index: number, onClick?: () => void) => {
+const BoxItems = (box: TBox, index: number) => {
+	const setActiveBox = useBoxesStore((state) => state.setActiveBox);
+	const onClickHandler = (box: TBox) => {
+		setActiveBox(box);
+	};
+
 	return (
-		<div key={`${box.text}-${index}`} className='py-1' onClick={onClick}>
+		<button
+			key={`${box.text}-${index}`}
+			className='py-1'
+			onClick={() => onClickHandler(box)}
+		>
 			{box.text}
-		</div>
+		</button>
 	);
 };

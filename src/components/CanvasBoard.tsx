@@ -2,15 +2,16 @@
 
 import { classToColor } from '@/helpers/classToColor';
 import useWindowDimensions from '@/hooks/useWindowDimentions';
-import { TBox } from '@/types/box';
+import { useBoxesStore } from '@/stores/boxes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type Props = {
 	bgImage: string;
-	boxes: TBox[];
 };
 
-const CanvasBoard = ({ bgImage, boxes }: Props) => {
+const CanvasBoard = ({ bgImage }: Props) => {
+	const boxes = useBoxesStore((state) => state.boxes);
+
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
 	const dimentions = useWindowDimensions();
