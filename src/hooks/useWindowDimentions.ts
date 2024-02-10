@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 function getWindowDimensions() {
 	if (!window) return { width: 0, height: 0 };
@@ -24,5 +24,5 @@ export default function useWindowDimensions() {
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
-	return windowDimensions;
+	return useMemo(() => windowDimensions, [windowDimensions]);
 }

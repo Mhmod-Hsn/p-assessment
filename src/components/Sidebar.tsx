@@ -26,7 +26,6 @@ export const Sidebar = memo(() => {
 			}
 		});
 		setGroupedBoxes(grouped);
-		console.log({ grouped });
 	}, [boxes]);
 
 	const renderBoxesList = () => {
