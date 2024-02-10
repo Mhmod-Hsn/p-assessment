@@ -1,9 +1,13 @@
 'use client';
 
 import { classToColor } from '@/helpers/classToColor';
+import useWindowDimensions from '@/hooks/useWindowDimentions';
+import { MOBILE_BREAKPOINT } from '@/lib/constants';
 import { useBoxesStore } from '@/stores/boxes';
 import { TBox } from '@/types/box';
-import { memo, useEffect, useState } from 'react';
+import { HamburgerMenuIcon } from '@radix-ui/react-icons';
+import { memo, useLayoutEffect, useState } from 'react';
+import { Drawer } from 'vaul';
 import { ModeToggle } from './ThemeToggle';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
@@ -14,9 +18,11 @@ type DetectedFields = {
 
 export const Sidebar = memo(() => {
 	const boxes = useBoxesStore((state) => state.boxes);
+	const screenDimentions = useWindowDimensions();
+
 	const [groupedBoxes, setGroupedBoxes] = useState<DetectedFields>({});
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		const grouped: DetectedFields = {};
 		boxes.forEach((box) => {
 			if (grouped[box.class]) {
@@ -54,7 +60,7 @@ export const Sidebar = memo(() => {
 		);
 	};
 
-	return (
+	const renderSidebarContent = () => (
 		<div
 			className='
 				min-w-[300px]
@@ -72,6 +78,27 @@ export const Sidebar = memo(() => {
 
 			<ModeToggle />
 		</div>
+	);
+	if (screenDimentions.width > MOBILE_BREAKPOINT) return renderSidebarContent();
+
+	return (
+		<Drawer.Root direction='left'>
+			<Drawer.Trigger asChild>
+				<Button
+					variant='outline'
+					className='fixed top-4 left-4 z-10  p-2 rounded'
+					size='icon'
+				>
+					<HamburgerMenuIcon />
+				</Button>
+			</Drawer.Trigger>
+			<Drawer.Portal>
+				<Drawer.Overlay className='fixed inset-0 bg-black/40' />
+				<Drawer.Content className='w-[300px] fixed top-0 bottom-0 left-0 z-20'>
+					{renderSidebarContent()}
+				</Drawer.Content>
+			</Drawer.Portal>
+		</Drawer.Root>
 	);
 });
 Sidebar.displayName = 'Sidebar';
