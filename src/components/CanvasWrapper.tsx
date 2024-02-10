@@ -3,8 +3,10 @@
 import { uuid } from '@/helpers/uuid';
 import { useBoxesStore } from '@/stores/boxes';
 import { TFile } from '@/types/file';
-import CanvasBoard from './CanvasBoard';
+import dynamic from 'next/dynamic';
 import { Sidebar } from './Sidebar';
+
+const CanvasBoard = dynamic(() => import('./CanvasBoard'), { ssr: false });
 
 type Props = {
 	data: TFile;
@@ -23,8 +25,7 @@ export const CanvasWrapper = ({ data }: Props) => {
 	return (
 		<div className='flex flex-row'>
 			{/* Sidebar */}
-			<Sidebar />
-			<CanvasBoard bgImage={data.base64} />
+			{/* <CanvasBoard bgImage={data.base64} /> */}
 		</div>
 	);
 };

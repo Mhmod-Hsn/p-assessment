@@ -4,6 +4,8 @@ import { classToColor } from '@/helpers/classToColor';
 import { useBoxesStore } from '@/stores/boxes';
 import { TBox } from '@/types/box';
 import { memo, useEffect, useState } from 'react';
+import { ModeToggle } from './ThemeToggle';
+import { ScrollArea } from './ui/scroll-area';
 
 type DetectedFields = {
 	[key: string]: TBox[];
@@ -26,33 +28,50 @@ export const Sidebar = memo(() => {
 		console.log({ grouped });
 	}, [boxes]);
 
-	return (
-		<div
-			className='
-        w-[300px]
-        p-4
-        dark:bg-slate-700'
-		>
-			{Object.keys(groupedBoxes).map((key) => {
-				return (
-					<div
-						key={key}
-						className='
+	const renderBoxesList = () => {
+		return (
+			<div>
+				{Object.keys(groupedBoxes).map((key) => {
+					return (
+						<div
+							key={key}
+							className='
               border
               rounded-md
               mb-4
               ps-2
               hover:dark:bg-slate-600
               '
-					>
-						{BoxClassTitle(key)}
+						>
+							{BoxClassTitle(key)}
 
-						{groupedBoxes[key].map((box, index) => (
-							<BoxItems key={index} {...box} />
-						))}
-					</div>
-				);
-			})}
+							{groupedBoxes[key].map((box, index) => (
+								<BoxItems key={index} {...box} />
+							))}
+						</div>
+					);
+				})}
+			</div>
+		);
+	};
+
+	return (
+		<div
+			className='
+        w-[300px]
+        h-full
+        p-4
+        dark:bg-slate-700
+        
+        flex
+        flex-col
+        justify-between
+        gap-4
+        '
+		>
+			<ScrollArea className='h-full'>{renderBoxesList()}</ScrollArea>
+
+			<ModeToggle />
 		</div>
 	);
 });

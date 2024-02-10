@@ -11,10 +11,10 @@ type Props = {
 
 const CanvasBoard = ({ bgImage }: Props) => {
 	const boxes = useBoxesStore((state) => state.boxes);
+	const dimentions = useWindowDimensions();
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const [aspectRatio, setAspectRatio] = useState<number>(1);
-	const dimentions = useWindowDimensions();
 	const [img, setImg] = useState<HTMLImageElement>(new Image());
 	const width = Math.min(dimentions.height * aspectRatio, dimentions.width);
 	const height = Math.min(dimentions.width / aspectRatio, dimentions.height);
