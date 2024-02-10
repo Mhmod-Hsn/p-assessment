@@ -4,7 +4,7 @@ import data from '../data/task-object.json';
 
 export default async function Home() {
 	return (
-		<main className='w-full h-[100vh] '>
+		<main className='w-full h-[100vh] flex '>
 			<Sidebar />
 			<CanvasWrapper data={data} />
 		</main>

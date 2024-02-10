@@ -78,8 +78,10 @@ const CanvasBoard = ({ bgImage }: Props) => {
 		drawBoxes();
 	}, [dimentions, drawBG, drawBoxes]);
 
-	return (
-		<div>
+	const renderCanvas = () => {
+		if (!aspectRatio) return null;
+
+		return (
 			<canvas
 				ref={canvasRef}
 				className=' border-spacing-2 border border-green-500 w-100'
@@ -89,8 +91,9 @@ const CanvasBoard = ({ bgImage }: Props) => {
 					aspectRatio: aspectRatio,
 				}}
 			/>
-		</div>
-	);
+		);
+	};
+	return <div>{renderCanvas()}</div>;
 };
 
 export default CanvasBoard;

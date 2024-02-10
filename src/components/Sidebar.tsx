@@ -58,7 +58,7 @@ export const Sidebar = memo(() => {
 	return (
 		<div
 			className='
-        w-[300px]
+				min-w-[300px]
         h-full
         p-4
         dark:bg-slate-700
@@ -67,7 +67,7 @@ export const Sidebar = memo(() => {
         flex-col
         justify-between
         gap-4
-        '
+			'
 		>
 			<ScrollArea className='h-full'>{renderBoxesList()}</ScrollArea>
 
