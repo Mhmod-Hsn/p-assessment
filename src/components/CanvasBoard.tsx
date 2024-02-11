@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { detectElementAreaClick } from '@/helpers/areaClickDetection';
 import { classToColor } from '@/helpers/classToColor';
 import useWindowDimensions from '@/hooks/useWindowDimentions';
 import { useBoxesStore } from '@/stores/boxes';
@@ -18,6 +19,7 @@ type Props = {
 
 const CanvasBoard = ({ bgImage }: Props) => {
 	const boxes = useBoxesStore((state) => state.boxes);
+	const setActiveBox = useBoxesStore((state) => state.setActiveBox);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -96,9 +98,40 @@ const CanvasBoard = ({ bgImage }: Props) => {
 	useEffect(() => {
 		drawBoxes();
 	}, [drawBoxes]);
+	const onDblClickHandler = useCallback(
+		(e: MouseEvent) => {
+			if (!canvasRef.current) return;
+			const element = detectElementAreaClick(
+				e,
+				boxes,
+				ratioBetweenContainerAndImage
+			);
+			if (!element) return;
+			setActiveBox(element);
+		},
+		[boxes, ratioBetweenContainerAndImage, setActiveBox]
+	);
+
+	// double click event listener
+	useEffect(() => {
+		const ref = canvasRef.current;
+		if (!ref) return;
+		ref.addEventListener('dblclick', onDblClickHandler);
+
+		return () => {
+			if (!ref) return;
+			ref.removeEventListener('dblclick', onDblClickHandler);
+		};
+	}, [onDblClickHandler]);
 
 	const renderCanvas = () => (
-		<canvas ref={canvasRef} className='absolute top-0 left-0 border' />
+		<canvas
+			ref={canvasRef}
+			className='absolute top-0 left-0 cursor-pointer'
+			style={{
+				userSelect: 'none',
+			}}
+		/>
 	);
 
 	const renderDebugData = () => (

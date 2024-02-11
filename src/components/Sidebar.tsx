@@ -38,25 +38,27 @@ export const Sidebar = memo(() => {
 	const renderBoxesList = () => {
 		return (
 			<div>
-				{Object.keys(groupedBoxes).map((key) => {
-					return (
-						<div
-							key={key}
-							className='
-              border
-              rounded-md
-              mb-4
-              p-2
-              '
-						>
-							{ClassTitle(key)}
+				{Object.keys(groupedBoxes)
+					.sort()
+					.map((key) => {
+						return (
+							<div
+								key={key}
+								className='
+									border
+									rounded-md
+									mb-4
+									p-2
+              	'
+							>
+								{ClassTitle(key)}
 
-							{groupedBoxes[key].map((box, index) => (
-								<BoxItem key={index} {...box} />
-							))}
-						</div>
-					);
-				})}
+								{groupedBoxes[key].map((box, index) => (
+									<BoxItem key={index} {...box} />
+								))}
+							</div>
+						);
+					})}
 			</div>
 		);
 	};
