@@ -6,18 +6,21 @@ import { TBox } from '@/types/box';
 import data from '../data/task-object.json';
 
 export default async function Home() {
+	// Generate unique IDs for each box
 	const boxesWithId: TBox[] = [...data.boxes].map((box) => {
 		return {
 			...box,
-			id: uuid(),
+			id: uuid(), // Assign a unique ID to each box
 		};
 	});
 
+	// Render the home page with sidebar and canvas wrapper
 	return (
 		<main className='w-full h-[100vh] flex '>
 			<Dehydrate>
-				<Sidebar />
+				<Sidebar /> {/* Render the Sidebar component */}
 			</Dehydrate>
+			{/* Render the CanvasWrapper component with updated data */}
 			<CanvasWrapper data={{ ...data, boxes: boxesWithId }} />
 		</main>
 	);

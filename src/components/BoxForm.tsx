@@ -35,7 +35,12 @@ export const BoxForm = (props: Props) => {
 
 	const form = useForm<z.infer<typeof editBoxFormSchema>>({
 		resolver: zodResolver(editBoxFormSchema),
-		defaultValues: {},
+		defaultValues: {
+			text: '',
+			class: '',
+			points: [0, 0, 0, 0],
+			id: '',
+		},
 	});
 	// 2. Define a submit handler.
 	function onSubmit(values: z.infer<typeof editBoxFormSchema>) {

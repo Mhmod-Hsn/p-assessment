@@ -1,5 +1,6 @@
 'use client';
 
+// Import necessary dependencies and components
 import useWindowDimensions from '@/hooks/useWindowDimentions';
 import { MOBILE_BREAKPOINT } from '@/lib/constants';
 import { useBoxesStore } from '@/stores/boxes';
@@ -13,16 +14,21 @@ import { ModeToggle } from './ThemeToggle';
 import { Button } from './ui/button';
 import { ScrollArea } from './ui/scroll-area';
 
+// Define type for grouping boxes
 type DetectedFields = {
 	[key: string]: TBox[];
 };
 
+// Define Sidebar component
 export const Sidebar = memo(() => {
+	// Fetch boxes and screen dimensions using custom hooks
 	const boxes = useBoxesStore((state) => state.boxes);
-	const screenDimentions = useWindowDimensions();
+	const screenDimensions = useWindowDimensions();
 
+	// State to hold grouped boxes
 	const [groupedBoxes, setGroupedBoxes] = useState<DetectedFields>({});
 
+	// Effect to group boxes when boxes change
 	useLayoutEffect(() => {
 		const grouped: DetectedFields = {};
 		boxes.forEach((box) => {
@@ -35,6 +41,7 @@ export const Sidebar = memo(() => {
 		setGroupedBoxes(grouped);
 	}, [boxes]);
 
+	// Function to render list of boxes
 	const renderBoxesList = () => {
 		return (
 			<div>
@@ -42,19 +49,10 @@ export const Sidebar = memo(() => {
 					.sort()
 					.map((key) => {
 						return (
-							<div
-								key={key}
-								className='
-									border
-									rounded-md
-									mb-4
-									p-2
-              	'
-							>
+							<div key={key} className='border rounded-md mb-4 p-2'>
 								{ClassTitle(key)}
-
 								{groupedBoxes[key].map((box, index) => (
-									<BoxItem key={index} {...box} />
+									<BoxItem key={index} box={box} />
 								))}
 							</div>
 						);
@@ -63,34 +61,24 @@ export const Sidebar = memo(() => {
 		);
 	};
 
+	// Function to render content of the sidebar
 	const renderSidebarContent = () => (
-		<div
-			className='
-				min-w-[300px]
-        h-full
-        p-4
-        dark:bg-slate-700
-        
-        flex
-        flex-col
-        justify-between
-        gap-4
-			'
-		>
+		<div className='min-w-[300px] h-full p-4 dark:bg-slate-700 flex flex-col justify-between gap-4'>
 			<ScrollArea className='h-full'>{renderBoxesList()}</ScrollArea>
-
 			<ModeToggle />
 		</div>
 	);
 
-	if (screenDimentions.width > MOBILE_BREAKPOINT) return renderSidebarContent();
+	// Render sidebar content based on screen width
+	if (screenDimensions.width > MOBILE_BREAKPOINT) return renderSidebarContent();
 
+	// Render sidebar content with Drawer component for mobile view
 	return (
 		<Drawer.Root direction='left'>
 			<Drawer.Trigger asChild>
 				<Button
 					variant='outline'
-					className='fixed top-4 left-4 z-10  p-2 rounded'
+					className='fixed top-4 left-4 z-10 p-2 rounded'
 					size='icon'
 				>
 					<HamburgerMenuIcon />
@@ -105,4 +93,6 @@ export const Sidebar = memo(() => {
 		</Drawer.Root>
 	);
 });
+
+// Set display name for the Sidebar component
 Sidebar.displayName = 'Sidebar';
