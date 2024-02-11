@@ -2,6 +2,7 @@
 import { detectElementAreaClick } from '@/helpers/areaClickDetection';
 import { classToColor } from '@/helpers/classToColor';
 import useWindowDimensions from '@/hooks/useWindowDimentions';
+import { isDevelopment } from '@/lib/utils';
 import { useBoxesStore } from '@/stores/boxes';
 import {
 	useCallback,
@@ -108,7 +109,7 @@ const CanvasBoard = ({ bgImage }: Props) => {
 		if (!containerRef?.current) return;
 
 		const rect = containerRef.current.getBoundingClientRect();
-		console.log(containerRef.current.getBoundingClientRect().width);
+
 		setContainerDimensions({ width: rect.width, height: rect.height });
 		setRatioBetweenContainerAndImage(rect.width / imgDimensions.width);
 
@@ -162,7 +163,7 @@ const CanvasBoard = ({ bgImage }: Props) => {
 			style={{
 				userSelect: 'none',
 				width: '100%',
-				height: containerDimensions.width / imageAspectRatio,
+				height: containerDimensions.width / imageAspectRatio || 0,
 			}}
 		/>
 	);
@@ -186,9 +187,8 @@ const CanvasBoard = ({ bgImage }: Props) => {
 	// Render the component
 	return (
 		<ScrollArea className='w-full h-full'>
-			{renderDebugData()}
+			{isDevelopment && renderDebugData()}
 			<div ref={containerRef} className='relative'>
-				{/* <img className='w-full h-auto' alt='background image' src={bgImage} /> */}
 				{renderCanvas()}
 				<BoxPopover
 					ratioBetweenContainerAndImage={ratioBetweenContainerAndImage}
