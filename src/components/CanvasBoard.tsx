@@ -29,6 +29,7 @@ const CanvasBoard = ({ bgImage }: Props) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
+	const [img, setImg] = useState<CanvasImageSource | null>(null);
 	// Dimensions and ratio states
 	const [imgDimensions, setImgDimensions] = useState({ width: 0, height: 0 });
 	const [containerDimensions, setContainerDimensions] = useState({
@@ -44,8 +45,7 @@ const CanvasBoard = ({ bgImage }: Props) => {
 		[imgDimensions]
 	);
 
-	// Draw boxes on the canvas
-	const drawBoxes = useCallback(() => {
+	const clearCanvas = useCallback(() => {
 		if (!canvasRef.current) return;
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext('2d');
@@ -53,6 +53,14 @@ const CanvasBoard = ({ bgImage }: Props) => {
 
 		// Clear previous drawings
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+	}, []);
+
+	// Draw boxes on the canvas
+	const drawBoxes = useCallback(() => {
+		if (!canvasRef.current) return;
+		const canvas = canvasRef.current;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
 
 		// Draw each box
 		boxes.forEach((box) => {
@@ -75,47 +83,50 @@ const CanvasBoard = ({ bgImage }: Props) => {
 		});
 	}, [boxes, ratioBetweenContainerAndImage]);
 
+	const drawImage = useCallback(() => {
+		if (!canvasRef.current) return;
+		const canvas = canvasRef.current;
+		const ctx = canvas.getContext('2d');
+		if (!ctx || !img) return;
+
+		ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+	}, [img]);
+
 	// Load image dimensions
 	useLayoutEffect(() => {
 		if (!bgImage) return;
 		const img = new Image();
 		img.src = bgImage;
 		img.onload = () => {
+			setImg(img);
 			setImgDimensions({ width: img.naturalWidth, height: img.naturalHeight });
 		};
 	}, [bgImage]);
 
-	// Update dimensions and draw boxes on resize or image load
-	useEffect(() => {
-		if (containerRef?.current) {
-			const rect = containerRef.current.getBoundingClientRect();
-			setContainerDimensions({ width: rect.width, height: rect.height });
-			setRatioBetweenContainerAndImage(rect.width / imgDimensions.width);
-
-			if (canvasRef.current) {
-				canvasRef.current.width = rect.width;
-				canvasRef.current.height = rect.height;
-				drawBoxes();
-			}
-		}
-	}, [drawBoxes, imgDimensions.width, containerDimensions.width]);
-
 	// Update dimensions and draw boxes on resize
 	useEffect(() => {
-		if (containerRef?.current) {
-			const rect = containerRef.current.getBoundingClientRect();
-			setContainerDimensions({
-				width: rect.width,
-				height: rect.height,
-			});
-			setRatioBetweenContainerAndImage(rect.width / imgDimensions.width);
-			if (canvasRef.current) {
-				canvasRef.current.width = rect.width;
-				canvasRef.current.height = rect.height;
-				drawBoxes();
-			}
-		}
-	}, [drawBoxes, imgDimensions.width, screenDimensions]);
+		if (!containerRef?.current) return;
+
+		const rect = containerRef.current.getBoundingClientRect();
+		console.log(containerRef.current.getBoundingClientRect().width);
+		setContainerDimensions({ width: rect.width, height: rect.height });
+		setRatioBetweenContainerAndImage(rect.width / imgDimensions.width);
+
+		if (!canvasRef?.current) return;
+		canvasRef.current.width = rect.width;
+		canvasRef.current.height = rect.height;
+
+		clearCanvas();
+		drawImage();
+		drawBoxes();
+	}, [
+		drawBoxes,
+		imgDimensions.width,
+		containerDimensions.width,
+		clearCanvas,
+		drawImage,
+		screenDimensions,
+	]);
 
 	// Handle double-click event to activate box
 	const onDblClickHandler = useCallback(
@@ -147,16 +158,37 @@ const CanvasBoard = ({ bgImage }: Props) => {
 	const renderCanvas = () => (
 		<canvas
 			ref={canvasRef}
-			className='absolute top-0 left-0 cursor-pointer'
-			style={{ userSelect: 'none' }}
+			className='cursor-pointer'
+			style={{
+				userSelect: 'none',
+				width: '100%',
+				height: containerDimensions.width / imageAspectRatio,
+			}}
 		/>
 	);
+
+	const renderDebugData = () => {
+		return (
+			<div className='fixed top-4 right-4 z-50 p-3  dark:text-slate-900 backdrop-blur-sm border'>
+				<p>
+					imgDimensions: {imgDimensions.width}, {imgDimensions.height}
+				</p>
+				<p>imageAspectRatio: {imageAspectRatio}</p>
+				<p>
+					containerDimensions: {containerDimensions.width},
+					{containerDimensions.height}
+				</p>
+				<p>ratioBetweenContainerAndImage: {ratioBetweenContainerAndImage}</p>
+			</div>
+		);
+	};
 
 	// Render the component
 	return (
 		<ScrollArea className='w-full h-full'>
+			{renderDebugData()}
 			<div ref={containerRef} className='relative'>
-				<img className='w-full h-auto' alt='background image' src={bgImage} />
+				{/* <img className='w-full h-auto' alt='background image' src={bgImage} /> */}
 				{renderCanvas()}
 				<BoxPopover
 					ratioBetweenContainerAndImage={ratioBetweenContainerAndImage}
