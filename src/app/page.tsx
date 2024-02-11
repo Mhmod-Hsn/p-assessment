@@ -1,4 +1,3 @@
-import { BoxInfoDialog } from '@/components/BoxDialog';
 import { CanvasWrapper } from '@/components/CanvasWrapper';
 import { Dehydrate } from '@/components/Dehydrate';
 import { Sidebar } from '@/components/Sidebar';
@@ -17,7 +16,6 @@ export default async function Home() {
 
 	return (
 		<main className='w-full h-[100vh] flex '>
-			<BoxInfoDialog />
 			<Dehydrate>
 				<Sidebar />
 			</Dehydrate>

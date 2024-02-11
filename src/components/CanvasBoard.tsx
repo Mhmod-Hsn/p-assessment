@@ -11,6 +11,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
+import { BoxPopover } from './BoxPopover';
 import { ScrollArea } from './ui/scroll-area';
 
 type Props = {
@@ -154,6 +155,9 @@ const CanvasBoard = ({ bgImage }: Props) => {
 			<div ref={containerRef} className='relative'>
 				<img className='w-full h-auto' alt='background image' src={bgImage} />
 				{renderCanvas()}
+				<BoxPopover
+					ratioBetweenContainerAndImage={ratioBetweenContainerAndImage}
+				/>
 			</div>
 		</ScrollArea>
 	);

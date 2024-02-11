@@ -1,13 +1,6 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-	DialogClose,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
 import { editBoxFormSchema } from '@/schema/box';
 import { useBoxesStore } from '@/stores/boxes';
 import { CLASSES } from '@/types/class';
@@ -59,6 +52,10 @@ export const BoxForm = (props: Props) => {
 		setActiveBox(null);
 	};
 
+	const onCancelHandler = () => {
+		setActiveBox(null);
+	};
+
 	useEffect(() => {
 		if (!activeBox) return;
 		form.reset(activeBox);
@@ -69,10 +66,6 @@ export const BoxForm = (props: Props) => {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-				<DialogHeader>
-					<DialogTitle>Edit</DialogTitle>
-					<DialogDescription>Update box information</DialogDescription>
-				</DialogHeader>
 				<FormField
 					control={form.control}
 					name='text'
@@ -118,7 +111,7 @@ export const BoxForm = (props: Props) => {
 					)}
 				/>
 
-				<DialogFooter>
+				<div className='flex justify-between gap-1 '>
 					<Button
 						type='button'
 						variant='destructive'
@@ -128,16 +121,14 @@ export const BoxForm = (props: Props) => {
 						Delete
 					</Button>
 
-					<DialogClose asChild>
-						<Button type='button' variant='secondary'>
-							Cancle
-						</Button>
-					</DialogClose>
+					<Button type='button' variant='ghost' onClick={onCancelHandler}>
+						Cancle
+					</Button>
 
 					<Button type='submit' variant='default'>
 						Save
 					</Button>
-				</DialogFooter>
+				</div>
 			</form>
 		</Form>
 	);
