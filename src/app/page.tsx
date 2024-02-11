@@ -12,7 +12,6 @@ export default async function Home() {
 			id: uuid(),
 		};
 	});
-	console.log({ boxesWithId });
 
 	return (
 		<main className='w-full h-[100vh] flex '>
