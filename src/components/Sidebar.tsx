@@ -63,7 +63,7 @@ export const Sidebar = memo(() => {
 
 	// Function to render content of the sidebar
 	const renderSidebarContent = () => (
-		<div className='min-w-[300px] h-full p-4 dark:bg-slate-700 flex flex-col justify-between gap-4'>
+		<div className='min-w-[300px] h-full p-4 bg-slate-200 dark:bg-slate-700 flex flex-col justify-between gap-4'>
 			<ScrollArea className='h-full'>{renderBoxesList()}</ScrollArea>
 			<ModeToggle />
 		</div>
